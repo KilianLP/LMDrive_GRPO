@@ -25,7 +25,7 @@ class LayerNorm(nn.LayerNorm):
         ret = super().forward(x.type(torch.float32))
         return ret.type(orig_type)
 
-@registry.register_model("vicuna_drive")
+@registry.register_model("vicuna_drive_grpo")
 class Blip2VicunaDrive(Blip2Base):
     """
     BLIP2 Vicuna model.
@@ -524,21 +524,8 @@ class Blip2VicunaDrive(Blip2Base):
         predicted_waypoints = predicted_waypoints[wp_target_index[:,0], wp_target_index[:, 1]]
         predicted_end_prob = self.end_predictor(hidden_states)
         predicted_end_prob = predicted_end_prob[wp_target_index[:,0], wp_target_index[:, 1]]
-        if inference_mode:
-            return predicted_waypoints, predicted_end_prob
 
-        gt_waypoints = self.build_gt_waypoints(samples['local_future_waypoints'], samples['valid_frames'])
-        waypoints_loss = self.waypoints_loss(predicted_waypoints, gt_waypoints)
-
-        gt_end_flags = self.build_gt_end_flags(samples['valid_frames'])
-        end_loss = self.end_loss(predicted_end_prob, gt_end_flags)
-
-        predicted_end = torch.argmax(predicted_end_prob, dim=1)
-        end_acc = (predicted_end == gt_end_flags).float().mean().item()
-
-        loss = waypoints_loss + end_loss * 0.2
-
-        return {"loss": loss, 'waypoints_loss': waypoints_loss, 'end_loss': end_loss, 'end_acc': end_acc}
+        return predicted_waypoints, predicted_end_prob
 
     def get_optimizer_params(self, weight_decay, lr_scale=1):
         parameter_group_names = {}
