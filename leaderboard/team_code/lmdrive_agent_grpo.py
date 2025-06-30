@@ -22,6 +22,7 @@ from team_code.planner import RoutePlanner, InstructionPlanner
 from team_code.pid_controller import PIDController
 from timm.models import create_model
 from lavis.common.registry import registry
+from lavis.models.drive_models import drive_grpo
 
 try:
     import pygame

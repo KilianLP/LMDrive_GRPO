@@ -39,6 +39,12 @@ from leaderboard.autoagents.agent_wrapper import  AgentWrapper, AgentError
 from leaderboard.utils.statistics_manager import StatisticsManager
 from leaderboard.utils.route_indexer import RouteIndexer
 
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+print("Project root:", project_root)
+sys.path.insert(0, project_root)
+
+from team_code.lmdrive_agent_grpo import LMDriveAgent
+
 
 sensors_to_icons = {
     'sensor.camera.rgb':        'carla_camera',
@@ -96,9 +102,10 @@ class LeaderboardEvaluator(object):
                 raise ImportError("CARLA version 0.9.10.1 or newer required. CARLA version found: {}".format(dist))
 
         # Load agent
-        module_name = os.path.basename(args.agent).split('.')[0]
-        sys.path.insert(0, os.path.dirname(args.agent))
-        self.module_agent = importlib.import_module(module_name)
+        #module_name = os.path.basename(args.agent).split('.')[0]
+    
+        #sys.path.insert(0, os.path.dirname(args.agent))
+        #self.module_agent = importlib.import_module(LMDriveAgent)
 
 
         # Create the ScenarioManager
@@ -380,56 +387,53 @@ class LeaderboardEvaluator(object):
         else:
             self.statistics_manager.clear_record(args.checkpoint)
             route_indexer.save_state(args.checkpoint)
-
-        # Set up the user's agent, and the timer to avoid freezing the simulation
-        try:
-            self._agent_watchdog.start()
-            agent_class_name = getattr(self.module_agent, 'get_entry_point')()
-            self.agent_instance = getattr(self.module_agent, agent_class_name)(args.agent_config)
-            config.agent = self.agent_instance
-
-            # Check and store the sensors
-            if not self.sensors:
-                self.sensors = self.agent_instance.sensors()
-                track = self.agent_instance.track
-
-                AgentWrapper.validate_sensor_configuration(self.sensors, track, args.track)
-
-                self.sensor_icons = [sensors_to_icons[sensor['type']] for sensor in self.sensors]
-                self.statistics_manager.save_sensors(self.sensor_icons, args.checkpoint)
-
-            self._agent_watchdog.stop()
-        
-        except SensorConfigurationInvalid as e:
-            # The sensors are invalid -> set the ejecution to rejected and stop
-            print("\n\033[91mThe sensor's configuration used is invalid:")
-            print("> {}\033[0m\n".format(e))
-            traceback.print_exc()
-
-            crash_message = "Agent's sensors were invalid"
-            entry_status = "Rejected"
-
-            self._register_statistics(config, args.checkpoint, entry_status, crash_message)
-            self._cleanup()
-            sys.exit(-1)
-
-        except Exception as e:
-            # The agent setup has failed -> start the next route
-            print("\n\033[91mCould not set up the required agent:")
-            print("> {}\033[0m\n".format(e))
-            traceback.print_exc()
-
-            crash_message = "Agent couldn't be set up"
-
-            self._register_statistics(config, args.checkpoint, entry_status, crash_message)
-            self._cleanup()
-            return
         
         n_route = 0
         while route_indexer.peek():
             # setup
             config = route_indexer.next()
             n_route += 1
+            try:
+                self._agent_watchdog.start()
+                self.agent_instance = LMDriveAgent(args.agent_config)
+                config.agent = self.agent_instance
+
+                # Check and store the sensors
+                if not self.sensors:
+                    self.sensors = self.agent_instance.sensors()
+                    track = self.agent_instance.track
+
+                    AgentWrapper.validate_sensor_configuration(self.sensors, track, args.track)
+
+                    self.sensor_icons = [sensors_to_icons[sensor['type']] for sensor in self.sensors]
+                    self.statistics_manager.save_sensors(self.sensor_icons, args.checkpoint)
+
+                self._agent_watchdog.stop()
+        
+            except SensorConfigurationInvalid as e:
+                # The sensors are invalid -> set the ejecution to rejected and stop
+                print("\n\033[91mThe sensor's configuration used is invalid:")
+                print("> {}\033[0m\n".format(e))
+                traceback.print_exc()
+
+                crash_message = "Agent's sensors were invalid"
+                entry_status = "Rejected"
+
+                self._register_statistics(config, args.checkpoint, entry_status, crash_message)
+                self._cleanup()
+                sys.exit(-1)
+
+            except Exception as e:
+                # The agent setup has failed -> start the next route
+                print("\n\033[91mCould not set up the required agent:")
+                print("> {}\033[0m\n".format(e))
+                traceback.print_exc()
+
+                crash_message = "Agent couldn't be set up"
+
+                self._register_statistics(config, args.checkpoint, entry_status, crash_message)
+                self._cleanup()
+                return
 
             # run
             for i in range(self.n_try):
@@ -496,6 +500,14 @@ def main():
     parser.add_argument("--checkpoint", type=str,
                         default='./simulation_results.json',
                         help="Path to checkpoint used for saving statistics and resuming")
+    
+    parser.add_argument("--n_try", type=int, default=1,
+                        help="Number of tries per route. The agent will be reset after each try.")
+    parser.add_argument("--batch_size", type=int, default=1,
+                        help="Number of routes to run before training the agent. The agent will be trained after every batch_size routes. If set to 1, the agent will be trained after each route.")
+    parser.add_argument("--grpo_buffer_size", type=int, default=1000,
+                        help="Size of the GRPO buffer. The buffer will store the input data, sample waypoints, score, waypoints, is_end, end_prob and is_last for each route. The buffer will be used to train the agent after each batch_size routes.")
+    
 
     arguments = parser.parse_args()
 

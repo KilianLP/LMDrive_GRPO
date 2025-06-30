@@ -398,7 +398,7 @@ class OpenScenario(BasicScenario):
         """
         This is a generic function to handle conditions utilising ConditionGroups
         Each ConditionGroup is represented as a Sequence of Conditions
-        The ConditionGroups are grouped under a SUCCESS_ON_ONE Parallel
+        The ConditionGroups are grouped under a SuccessOnOne() Parallel
         """
 
         parallel_condition_groups = py_trees.composites.Parallel(name,
