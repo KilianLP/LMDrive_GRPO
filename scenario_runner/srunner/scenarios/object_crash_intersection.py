@@ -200,7 +200,7 @@ class VehicleTurningRight(BasicScenario):
         """
 
         root = py_trees.composites.Parallel(
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE, name="IntersectionRightTurn")
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne(), name="IntersectionRightTurn")
 
         lane_width = self._reference_waypoint.lane_width
         dist_to_travel = lane_width + (1.10 * lane_width * self._num_lane_changes)
@@ -228,10 +228,10 @@ class VehicleTurningRight(BasicScenario):
 
         actor_ego_sync = py_trees.composites.Parallel(
             "Synchronization of actor and ego vehicle",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         after_timer_actor = py_trees.composites.Parallel(
             "After timeout actor will cross the remaining lane_width",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
 
         # building the tree
         root.add_child(scenario_sequence)
@@ -367,7 +367,7 @@ class VehicleTurningLeft(BasicScenario):
         """
 
         root = py_trees.composites.Parallel(
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE, name="IntersectionLeftTurn")
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne(), name="IntersectionLeftTurn")
 
         lane_width = self._reference_waypoint.lane_width
         dist_to_travel = lane_width + (1.10 * lane_width * self._num_lane_changes)
@@ -395,10 +395,10 @@ class VehicleTurningLeft(BasicScenario):
 
         actor_ego_sync = py_trees.composites.Parallel(
             "Synchronization of actor and ego vehicle",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         after_timer_actor = py_trees.composites.Parallel(
             "After timeout actor will cross the remaining lane_width",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
 
         # building the tree
         root.add_child(scenario_sequence)
@@ -535,7 +535,7 @@ class VehicleTurningRoute(BasicScenario):
         """
 
         root = py_trees.composites.Parallel(
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE, name="IntersectionRouteTurn")
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne(), name="IntersectionRouteTurn")
 
         lane_width = self._reference_waypoint.lane_width
         dist_to_travel = lane_width + (1.10 * lane_width * self._num_lane_changes)
@@ -563,10 +563,10 @@ class VehicleTurningRoute(BasicScenario):
 
         actor_ego_sync = py_trees.composites.Parallel(
             "Synchronization of actor and ego vehicle",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         after_timer_actor = py_trees.composites.Parallel(
             "After timeout actor will cross the remaining lane_width",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
 
         # building the tree
         root.add_child(scenario_sequence)

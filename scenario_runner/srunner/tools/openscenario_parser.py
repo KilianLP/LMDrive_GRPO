@@ -926,7 +926,7 @@ class OpenScenarioParser(object):
                     OpenScenarioParser.get_friction_from_env_action(global_action, catalogs))
 
                 env_behavior = py_trees.composites.Parallel(
-                    policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ALL, name=maneuver_name)
+                    policy=py_trees.common.ParallelPolicy.SuccessOnAll(), name=maneuver_name)
 
                 env_behavior.add_child(
                     oneshot_behavior(variable_name=maneuver_name + ">WeatherUpdate", behaviour=weather_behavior))

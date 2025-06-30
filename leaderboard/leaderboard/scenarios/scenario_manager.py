@@ -131,12 +131,14 @@ class ScenarioManager(object):
         while self._running:
             timestamp = None
             world = CarlaDataProvider.get_world()
+            #print("Running scenario")
             if world:
                 snapshot = world.get_snapshot()
                 if snapshot:
                     timestamp = snapshot.timestamp
             if timestamp:
                 self._tick_scenario(timestamp)
+        print("Scenario finished")
 
     def _tick_scenario(self, timestamp):
         """
@@ -153,6 +155,7 @@ class ScenarioManager(object):
 
             try:
                 ego_action = self._agent()
+                #print("Ego action: ")
 
             # Special exception inside the agent that isn't caused by the agent
             except SensorReceivedNoData as e:

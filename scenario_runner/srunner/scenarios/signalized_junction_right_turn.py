@@ -106,7 +106,7 @@ class SignalizedJunctionRightTurn(BasicScenario):
 
         sync_arrival_parallel = py_trees.composites.Parallel(
             "Synchronize arrival times",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         sync_arrival_parallel.add_child(sync_arrival)
         sync_arrival_parallel.add_child(sync_arrival_stop)
 
@@ -126,7 +126,7 @@ class SignalizedJunctionRightTurn(BasicScenario):
             self.other_actors[0], plan[-1][0].transform.location, 10)
 
         move_actor_parallel = py_trees.composites.Parallel(
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         move_actor_parallel.add_child(move_actor)
         move_actor_parallel.add_child(waypoint_follower_end)
         # stop other actor

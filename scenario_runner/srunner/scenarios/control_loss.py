@@ -128,7 +128,7 @@ class ControlLoss(BasicScenario):
         """
         # start condition
         start_end_parallel = py_trees.composites.Parallel("Jitter",
-                                                          policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+                                                          policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         start_condition = InTriggerDistanceToLocation(self.ego_vehicles[0], self.first_loc_prev, self._trigger_dist)
         for _ in range(self._no_of_jitter):
 
@@ -141,7 +141,7 @@ class ControlLoss(BasicScenario):
                                           0, 0, 0, 0)
 
         jitter_action = py_trees.composites.Parallel("Jitter",
-                                                     policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+                                                     policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         # Abort jitter_sequence, if the vehicle is approaching an intersection
         jitter_abort = InTriggerDistanceToNextIntersection(self.ego_vehicles[0], self._abort_distance_to_intersection)
         # endcondition: Check if vehicle reached waypoint _end_distance from here:

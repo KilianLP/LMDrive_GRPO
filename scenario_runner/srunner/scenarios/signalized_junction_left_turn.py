@@ -121,7 +121,7 @@ class SignalizedJunctionLeftTurn(BasicScenario):
 
         # Behavior tree
         root = py_trees.composites.Parallel(
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
         root.add_child(wait)
         root.add_child(actor_source)
         root.add_child(actor_sink)

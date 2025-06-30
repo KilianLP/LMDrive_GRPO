@@ -18,7 +18,7 @@ pycocotools
 python-magic
 scikit-image
 sentencepiece
-spacy
+spacy==3.5.3
 streamlit
 torch>=1.10.0
 tqdm

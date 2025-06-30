@@ -432,10 +432,10 @@ class RouteScenario(BasicScenario):
         """
         scenario_trigger_distance = 1.5  # Max trigger distance between route and scenario
 
-        behavior = py_trees.composites.Parallel(policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+        behavior = py_trees.composites.Parallel(policy=py_trees.common.ParallelPolicy.SuccessOnOne())
 
         subbehavior = py_trees.composites.Parallel(name="Behavior",
-                                                   policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ALL)
+                                                   policy=py_trees.common.ParallelPolicy.SuccessOnAll())
 
         scenario_behaviors = []
         blackboard_list = []

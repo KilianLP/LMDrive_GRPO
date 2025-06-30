@@ -131,7 +131,7 @@ class OppositeVehicleRunningRedLight(BasicScenario):
 
         sync_arrival_parallel = py_trees.composites.Parallel(
             "Synchronize arrival times",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
 
         location_of_collision_dynamic = get_geometric_linear_intersection(self.ego_vehicles[0], self.other_actors[0])
 
@@ -159,7 +159,7 @@ class OppositeVehicleRunningRedLight(BasicScenario):
 
         continue_driving = py_trees.composites.Parallel(
             "ContinueDriving",
-            policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+            policy=py_trees.common.ParallelPolicy.SuccessOnOne())
 
         continue_driving_waypoints = WaypointFollower(
             self.other_actors[0], self._other_actor_target_velocity, plan=plan, avoid_collision=False)

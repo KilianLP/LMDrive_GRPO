@@ -134,7 +134,7 @@ class ManeuverOppositeDirection(BasicScenario):
             blackboard_queue_name=self._blackboard_queue_name, avoid_collision=True)
 
         # Non-leaf nodes
-        parallel_root = py_trees.composites.Parallel(policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
+        parallel_root = py_trees.composites.Parallel(policy=py_trees.common.ParallelPolicy.SuccessOnOne())
 
         # Building tree
         parallel_root.add_child(ego_drive_distance)
